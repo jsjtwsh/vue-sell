@@ -33,7 +33,24 @@
          <split></split>
          <div class="rating">
            <h1 class="title">商品评价</h1>
-           <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></ratingselect>
+           <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings" @select="select" @toggle="toggle"></ratingselect>
+         </div>
+         <div class="rating-wrapper">
+           <ul v-show="food.ratings && food.ratings.length">
+             <li v-for="(rating,index) in food.ratings" :key=index class="rating-item">
+               <div class="user">
+                 <span class="name">{{rating.username}}</span>
+                 <img class="avatar" width="12" height="12" :src="rating.avatar">
+               </div>
+               <div class="time">
+                 {{rating.rateTime}}
+               </div>
+               <p class="text">
+                 <span :class="{'icon-thumb_up':rating.rateType===0,'icon-thumb_down':rating.rateType===1}"></span>{{rating.text}}
+               </p>
+             </li>
+           </ul>
+           <div class="no-rating" ></div> <!-- v-show="!food.ratings ||!food.ratings.length" -->
          </div>
        </div>
      </div>
@@ -71,7 +88,7 @@ export default {
     show () {
       this.showFlag = true
       this.selectType = ALL
-      this.onlyContent = true
+      this.onlyContent = false
       this.$nextTick(() => {
         if (!this.scroll) {
           this.scroll = new BScroll(this.$refs.food, {
@@ -91,6 +108,17 @@ export default {
       }
       this.$emit('add', event.target)
       Vue.set(this.food, 'count', 1)
+      console.log(this.food)
+    },
+    select (type) {
+      // console.log('type', type)
+      this.selectType = type
+    },
+    toggle () {
+      this.onlyContent = !this.onlyContent
+      this.$nextTick(() => {
+        this.scroll.refresh()
+      })
     }
   },
   components: {

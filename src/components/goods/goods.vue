@@ -112,6 +112,7 @@ export default {
     },
     selectFood (food, event) {
       console.log(this.$refs.food)
+      console.log('food:', food)
       this.selectedFood = food
       this.$refs.food.show()
     },
